@@ -1,11 +1,12 @@
 {
-    "name": "Haskell Development",
-    "dockerFile": "Dockerfile",
-    "extensions": [
-      "justusadam.language-haskell"
-    ],
-    "settings": {
-      "terminal.integrated.defaultProfile.linux": "/bin/bash"
-    }
-  }
-  
+  "name": "Haskell Dev Environment",
+  "image": "haskell:latest",
+  "settings": {
+    "terminal.integrated.shell.linux": "/bin/bash"
+  },
+  "postCreateCommand": "cabal update",
+  "extensions": [
+    "justusadam.language-haskell",
+    "haskell.haskell"
+  ]
+}
