@@ -1,2 +1,4 @@
-# perso-2024b-joaohsw
-perso-2024b-joaohsw created by GitHub Classroom
+# Produção personalizada ELC117-2024b
+
+Nome: João Henrique Scherer Wolski \
+Curso: Sistemas de informação
