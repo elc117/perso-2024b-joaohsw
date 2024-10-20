@@ -3,18 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz de Geografia</title>
-    <link rel="stylesheet" type="text/css" href="/style.css">
+    <title>Quiz</title>
 </head>
 <body>
-    <h1>Quiz de Geografia</h1>
-    <form action="/submit" method="post">
-        <p>Qual é a capital do Brasil?</p>
-        <label><input type="radio" name="answer" value="São Paulo"> São Paulo</label><br>
-        <label><input type="radio" name="answer" value="Rio de Janeiro"> Rio de Janeiro</label><br>
-        <label><input type="radio" name="answer" value="Brasília"> Brasília</label><br>
-        <label><input type="radio" name="answer" value="Salvador"> Salvador</label><br>
-        <input type="submit" value="Enviar">
+    <h1>Quiz: Qual é a capital do Brasil?</h1>
+    
+    <form action="/submit" method="POST">
+        <label for="answer">Escolha a resposta:</label>
+        <select name="answer" id="answer">
+            <option value="Brasília">Brasília</option>
+            <option value="Rio de Janeiro">Rio de Janeiro</option>
+            <option value="São Paulo">São Paulo</option>
+            <option value="Salvador">Salvador</option>
+        </select>
+        <button type="submit">Enviar Resposta</button>
     </form>
 </body>
 </html>
