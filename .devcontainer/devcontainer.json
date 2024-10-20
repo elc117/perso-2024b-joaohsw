@@ -1,0 +1,11 @@
+{
+    "name": "Haskell Development",
+    "dockerFile": "Dockerfile",
+    "extensions": [
+      "justusadam.language-haskell"
+    ],
+    "settings": {
+      "terminal.integrated.defaultProfile.linux": "/bin/bash"
+    }
+  }
+  
