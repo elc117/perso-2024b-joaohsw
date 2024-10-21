@@ -23,14 +23,15 @@
       max-width: 400px;
       width: 100%;
     }
-    h1 {
+    h2 {
       margin-bottom: 20px;
       color: #333;
     }
     .btn {
       background-color: #4CAF50;
       color: white;
-      padding: 10px 20px;
+      padding: 8px 16px; /* Ajustar o padding */
+      margin: 5px 0; /* Adicionar margem para espaçamento */
       border: none;
       border-radius: 5px;
       cursor: pointer;
@@ -44,9 +45,8 @@
 </head>
 <body>
   <div class="container">
-    <h1>Resposta Correta!</h1>
-    <a href="/leaderboard" class="btn">Ver Leaderboard</a><br>
-    <a href="/quiz?name={name}" class="btn">Voltar ao Quiz</a>
+    <h2>Resposta Correta!</h2>
+    <a href="/leaderboard" class="btn">Ver Leaderboard</a> <!-- Apenas um botão -->
   </div>
 </body>
 </html>

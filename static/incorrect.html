@@ -23,14 +23,15 @@
       max-width: 400px;
       width: 100%;
     }
-    h1 {
+    h2 {
       margin-bottom: 20px;
       color: #333;
     }
     .btn {
-      background-color: #4CAF50;
+      background-color: #f44336; /* Cor do botão para resposta incorreta */
       color: white;
-      padding: 10px 20px;
+      padding: 8px 16px; /* Ajustar o padding */
+      margin: 5px 0; /* Adicionar margem para espaçamento */
       border: none;
       border-radius: 5px;
       cursor: pointer;
@@ -38,14 +39,14 @@
       transition: background-color 0.3s ease;
     }
     .btn:hover {
-      background-color: #45a049;
+      background-color: #d32f2f; /* Cor do botão ao passar o mouse */
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1>Resposta Incorreta.</h1>
-    <a href="/quiz?name={name}" class="btn">Tentar de novo</a>
+    <h2>Resposta Incorreta!</h2>
+    <a href="/leaderboard" class="btn">Ver Leaderboard</a> <!-- Apenas um botão -->
   </div>
 </body>
 </html>
