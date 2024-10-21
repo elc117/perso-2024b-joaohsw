@@ -9,7 +9,7 @@ import Control.Monad.IO.Class (liftIO)
 import Data.IORef (newIORef, readIORef, writeIORef, IORef)
 import Data.List (sortBy)
 import Data.Ord (Down(..))
-import Data.Function (on) -- Importa on para uso na comparação
+import Data.Function (on)
 
 type Leaderboard = [(Text, Int)]
 
