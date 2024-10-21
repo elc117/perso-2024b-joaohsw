@@ -9,7 +9,7 @@ Neste trabalho de faculdade, desenvolvi um serviço web utilizando Haskell e a b
 
 # Processo de desenvolvimento
 
-**Primeira versão** \
+**Primeira versão** 
 
 ```haskell
 
@@ -42,7 +42,7 @@ main = scotty 3000 $ do
       else html "<h2>Resposta Incorreta.</h2><a href=\"/quiz\">Tentar de novo</a>"
 
 ``` 
-Primeira versão/teste com a biblioteca Scotty, sofri um pouco para entender como funciona. \
+Primeira versão/teste com a biblioteca Scotty, decidi começar implementando tanto a parte Web quanto a lógica do quiz. Sofri bastante até conseguir chegar em um protótipo minimamente funcional. \
 
 ```html
 
