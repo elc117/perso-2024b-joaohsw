@@ -49,34 +49,11 @@
   <div class="container">
     <h1>Quiz de Geografia</h1>
     <form action="/submit" method="POST">
-      <input type="hidden" name="name" value="">
-      <p>Qual é a capital do Brasil?</p>
-      <div class="option">
-        <input type="radio" id="option-a" name="answer" value="São Paulo" required>
-        <label for="option-a">A) São Paulo</label>
-      </div>
-      <div class="option">
-        <input type="radio" id="option-b" name="answer" value="Rio de Janeiro" required>
-        <label for="option-b">B) Rio de Janeiro</label>
-      </div>
-      <div class="option">
-        <input type="radio" id="option-c" name="answer" value="Salvador" required>
-        <label for="option-c">C) Salvador</label>
-      </div>
-      <div class="option">
-        <input type="radio" id="option-d" name="answer" value="Brasília" required>
-        <label for="option-d">D) Brasília</label>
-      </div>
+      <input type="hidden" name="name" value="{name}">
+      <p>{question}</p>
+      {alternatives}
       <button type="submit" class="btn">Enviar Resposta</button>
     </form>
   </div>
-  <script>
-    // Preencher o nome do jogador no campo oculto
-    const urlParams = new URLSearchParams(window.location.search);
-    const playerName = urlParams.get('name');
-    if (playerName) {
-      document.querySelector('input[name="name"]').value = playerName;
-    }
-  </script>
 </body>
 </html>
