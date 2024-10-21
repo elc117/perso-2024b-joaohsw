@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Leaderboard</title>
+  <title>Bem-vindo</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -11,7 +11,6 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      flex-direction: column;
       height: 100vh;
       margin: 0;
     }
@@ -24,13 +23,9 @@
       max-width: 400px;
       width: 100%;
     }
-    h1 {
+    h2 {
       margin-bottom: 20px;
       color: #333;
-    }
-    .entry {
-      margin: 5px 0;
-      color: #666;
     }
     .btn {
       background-color: #4CAF50;
@@ -49,9 +44,8 @@
 </head>
 <body>
   <div class="container">
-    <h1>Leaderboard</h1>
-    <div id="leaderboard-entries">{scores}</div>
-    <a href="/quiz" class="btn">Voltar ao Quiz</a>
+    <h2>Bem-vindo, {name}!</h2>
+    <a href="/quiz?name={name}" class="btn">Começar Quiz</a>
   </div>
 </body>
 </html>

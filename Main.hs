@@ -23,7 +23,9 @@ main = do
     -- Após registrar o nome, redireciona para o quiz
     post "/start" $ do
       name <- formParam "name" :: ActionM Text -- O nome é enviado via form
-      html $ T.concat ["<h2>Bem-vindo, ", name, "!</h2><a href=\"/quiz?name=", name, "\">Começar Quiz</a>"]
+      welcomeHtml <- liftIO $ TIO.readFile "static/welcome.html"
+      let responseHtml = T.replace "{name}" name welcomeHtml
+      html responseHtml
 
     -- Página do quiz
     get "/quiz" $ do
@@ -38,14 +40,23 @@ main = do
       if answer == correctAnswer
         then do
           liftIO $ updateLeaderboard leaderboard (name, 1) -- Atualiza pontuação
-          html "<h2>Resposta Correta!</h2><a href=\"/quiz\">Voltar ao quiz</a><br><a href=\"/leaderboard\">Ver Leaderboard</a>"
-        else html "<h2>Resposta Incorreta.</h2><a href=\"/quiz\">Tentar de novo</a>"
+          correctHtml <- liftIO $ TIO.readFile "static/correct.html"
+          let responseHtml = T.replace "{name}" name correctHtml
+          html responseHtml
+        else do
+          incorrectHtml <- liftIO $ TIO.readFile "static/incorrect.html"
+          let responseHtml = T.replace "{name}" name incorrectHtml
+          html responseHtml
 
+    -- Página do leaderboard
     -- Página do leaderboard
     get "/leaderboard" $ do
       lb <- liftIO $ readIORef leaderboard
-      let leaderboardHtml = T.concat $ map (\(n, s) -> T.concat ["<div>", n, ": ", T.pack (show s), " ponto(s)</div>"]) lb
-      html $ T.concat ["<h1>Leaderboard</h1>", leaderboardHtml, "<a href=\"/quiz\">Voltar ao Quiz</a>"]
+      let scoresHtml = T.concat $ map (\(n, s) -> T.concat ["<div class=\"entry\">", n, ": ", T.pack (show s), " ponto(s)</div>"]) lb
+      leaderboardHtml <- liftIO $ TIO.readFile "static/leaderboard.html"
+      let responseHtml = T.replace "{scores}" scoresHtml leaderboardHtml
+      html responseHtml
+
 
 -- Função para atualizar o leaderboard
 updateLeaderboard :: IORef Leaderboard -> (Text, Int) -> IO ()
