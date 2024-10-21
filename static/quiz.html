@@ -1,24 +1,73 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz</title>
-    <link rel="stylesheet" href="style.css">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz de Geografia</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 400px;
+      width: 100%;
+    }
+    h1 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+    .option {
+      margin-bottom: 10px;
+    }
+    .btn {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      display: inline-block;
+      transition: background-color 0.3s ease;
+    }
+    .btn:hover {
+      background-color: #45a049;
+    }
+  </style>
 </head>
 <body>
-    <h1>Quiz: Qual é a capital do Brasil?</h1>
-    
+  <div class="container">
+    <h1>Quiz de Geografia</h1>
     <form action="/submit" method="POST">
-        <label for="answer">Escolha a resposta:</label>
-        <select name="answer" id="answer">
-            <option value="Brasília">Brasília</option>
-            <option value="Rio de Janeiro">Rio de Janeiro</option>
-            <option value="São Paulo">São Paulo</option>
-            <option value="Salvador">Salvador</option>
-        </select>
-        <button type="submit">Enviar Resposta</button>
+      <p>Qual é a capital do Brasil?</p>
+      <div class="option">
+        <input type="radio" id="option-a" name="answer" value="São Paulo" required>
+        <label for="option-a">A) São Paulo</label>
+      </div>
+      <div class="option">
+        <input type="radio" id="option-b" name="answer" value="Rio de Janeiro" required>
+        <label for="option-b">B) Rio de Janeiro</label>
+      </div>
+      <div class="option">
+        <input type="radio" id="option-c" name="answer" value="Salvador" required>
+        <label for="option-c">C) Salvador</label>
+      </div>
+      <div class="option">
+        <input type="radio" id="option-d" name="answer" value="Brasília" required>
+        <label for="option-d">D) Brasília</label>
+      </div>
+      <button type="submit" class="btn">Enviar Resposta</button>
     </form>
+  </div>
 </body>
 </html>

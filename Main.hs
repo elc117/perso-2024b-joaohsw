@@ -25,4 +25,3 @@ main = scotty 3000 $ do
     if answer == ("Brasília" :: Text)
       then html "<h2>Resposta Correta!</h2><a href=\"/quiz\">Voltar ao quiz</a>"
       else html "<h2>Resposta Incorreta.</h2><a href=\"/quiz\">Tentar de novo</a>"
-
