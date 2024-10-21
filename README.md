@@ -41,5 +41,5 @@ main = scotty 3000 $ do
       then html "<h2>Resposta Correta!</h2><a href=\"/quiz\">Voltar ao quiz</a>"
       else html "<h2>Resposta Incorreta.</h2><a href=\"/quiz\">Tentar de novo</a>"
 
-``` \
+``` 
 Primeira versão/teste com a biblioteca Scotty, sofri um pouco para entender como funciona.
