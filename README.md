@@ -42,7 +42,7 @@ main = scotty 3000 $ do
       else html "<h2>Resposta Incorreta.</h2><a href=\"/quiz\">Tentar de novo</a>"
 
 ``` 
-Primeira versão/teste com a biblioteca Scotty, decidi começar implementando tanto a parte Web quanto a lógica do quiz. Sofri bastante até conseguir chegar em um protótipo minimamente funcional. \
+Primeira versão/teste com a biblioteca Scotty, decidi começar implementando tanto a parte Web quanto a lógica do quiz. Sofri bastante até conseguir chegar em um protótipo minimamente funcional. 
 
 ```html
 
@@ -127,60 +127,54 @@ type Leaderboard = [(Text, Int)]
 
 main :: IO ()
 main = do
-  leaderboard <- newIORef [] -- Lista de jogadores e suas pontuações
+  leaderboard <- newIORef [] 
   scotty 3000 $ do
     middleware logStdoutDev
 
-    -- Página de registro
     get "/" $ do
       file "static/register.html"
 
-    -- Após registrar o nome, redireciona para o quiz
     post "/start" $ do
-      name <- formParam "name" :: ActionM Text -- O nome é enviado via form
-      liftIO $ updateLeaderboard leaderboard (name, 0) -- Define a pontuação inicial como 0
+      name <- formParam "name" :: ActionM Text 
+      liftIO $ updateLeaderboard leaderboard (name, 0) 
       welcomeHtml <- liftIO $ TIO.readFile "static/welcome.html"
       let responseHtml = T.replace "{name}" name welcomeHtml
       html responseHtml
 
-    -- Página do quiz
     get "/quiz" $ do
-      name <- queryParam "name" :: ActionM Text -- Usando queryParam
+      name <- queryParam "name" :: ActionM Text 
       file "static/quiz.html"
 
-    -- Submissão da resposta
     post "/submit" $ do
-      answer <- formParam "answer" :: ActionM Text -- O answer é enviado via form
-      name <- formParam "name" :: ActionM Text -- O name também é enviado via form
+      answer <- formParam "answer" :: ActionM Text 
+      name <- formParam "name" :: ActionM Text 
       let correctAnswer = "Brasília"
       if answer == correctAnswer
         then do
-          liftIO $ updateLeaderboard leaderboard (name, 1) -- Incrementa a pontuação em 1
+          liftIO $ updateLeaderboard leaderboard (name, 1) 
           correctHtml <- liftIO $ TIO.readFile "static/correct.html"
           let responseHtml = T.replace "{name}" name correctHtml
           html responseHtml
         else do
-          liftIO $ updateLeaderboard leaderboard (name, 0) -- Define a pontuação como 0
+          liftIO $ updateLeaderboard leaderboard (name, 0) 
           incorrectHtml <- liftIO $ TIO.readFile "static/incorrect.html"
           let responseHtml = T.replace "{name}" name incorrectHtml
           html responseHtml
 
-    -- Página do leaderboard
     get "/leaderboard" $ do
       lb <- liftIO $ readIORef leaderboard
-      let sortedLb = sortBy (compare `on` Down . snd) lb -- Ordena por pontuação decrescente
+      let sortedLb = sortBy (compare `on` Down . snd) lbdecrescente
       let leaderboardHtml = T.concat $ map (\(n, s) -> T.concat ["<div>", n, ": ", T.pack (show s), " ponto(s)</div>"]) sortedLb
       leaderboardTemplate <- liftIO $ TIO.readFile "static/leaderboard.html"
       let responseHtml = T.replace "{scores}" leaderboardHtml leaderboardTemplate
       html responseHtml
 
--- Função para atualizar o leaderboard
 updateLeaderboard :: IORef Leaderboard -> (Text, Int) -> IO ()
 updateLeaderboard lbRef (name, score) = do
   lb <- readIORef lbRef
   let updatedLb = case lookup name lb of
-                    Just currentScore -> (name, currentScore + score) : filter ((/= name) . fst) lb -- Atualiza a pontuação existente
-                    Nothing           -> (name, score) : lb -- Adiciona novo jogador
+                    Just currentScore -> (name, currentScore + score) : filter ((/= name) . fst) lb 
+                    Nothing           -> (name, score) : lb 
   writeIORef lbRef updatedLb
 
 ```
@@ -203,9 +197,8 @@ import Data.Ord (Down(..))
 import Data.Function (on)
 
 type Leaderboard = [(Text, Int)]
-type Question = (Text, [Text], Int) -- (Pergunta, Alternativas, Índice da resposta correta)
+type Question = (Text, [Text], Int) 
 
--- Definindo as perguntas do quiz
 questions :: [Question]
 questions = [("Qual é a capital da Austrália?", ["Camberra", "Sydney", "Melbourne", "Brisbane"], 0),
              ("Quantos países fazem parte da União Europeia?", ["27", "22", "18", "30"], 0),
@@ -223,36 +216,31 @@ questions = [("Qual é a capital da Austrália?", ["Camberra", "Sydney", "Melbou
 
 main :: IO ()
 main = do
-  leaderboard <- newIORef [] -- Lista de jogadores e suas pontuações
-  currentQuestionIndex <- newIORef 0 -- Índice da pergunta atual
+  leaderboard <- newIORef [] 
+  currentQuestionIndex <- newIORef 0 
   scotty 3000 $ do
     middleware logStdoutDev
 
-    -- Página de registro
     get "/" $ do
       file "static/register.html"
 
-    -- Após registrar o nome, redireciona para o quiz
     post "/start" $ do
-      name <- formParam "name" :: ActionM Text -- O nome é enviado via formulário
-      liftIO $ updateLeaderboard leaderboard (name, 0) -- Define a pontuação inicial como 0
-      liftIO $ writeIORef currentQuestionIndex 0 -- Reinicia o índice da pergunta
+      name <- formParam "name" :: ActionM Text 
+      liftIO $ updateLeaderboard leaderboard (name, 0) 
+      liftIO $ writeIORef currentQuestionIndex 0 
       redirect ("/quiz?name=" <> name)
 
-    -- Página do quiz
     get "/quiz" $ do
-      names <- queryParam "name" -- `queryParam` retorna uma lista de parâmetros
+      names <- queryParam "name" 
       case names of
-        [] -> redirect "/" -- Se não houver nome na query string, redireciona para o início
+        [] -> redirect "/" 
         (playerName:_) -> do
           index <- liftIO $ readIORef currentQuestionIndex
-          let (question, alternatives, _) = questions !! index -- Obtém a pergunta atual
+          let (question, alternatives, _) = questions !! index 
           let alternativesHtml = T.concat $ zipWith (\i a -> T.concat ["<div class='option'><input type='radio' id='option-", T.pack (show i), "' name='answer' value='", T.pack (show i), "' required><label for='option-", T.pack (show i), "'>", a, "</label></div>"]) [0..] alternatives
 
-          -- Lê o template do quiz
           questionTemplate <- liftIO $ TIO.readFile "static/quiz.html"
 
-          -- Substitui os placeholders pelo conteúdo real
           let questionHtml = T.replace "{question}" question $
                              T.replace "{alternatives}" alternativesHtml $
                              T.replace "{name}" playerName $
@@ -260,35 +248,31 @@ main = do
 
           html questionHtml
 
-    -- Submissão da resposta
     post "/submit" $ do
-      answerIndex <- formParam "answer" :: ActionM Text -- O índice da alternativa escolhida
-      name <- formParam "name" :: ActionM Text -- O nome também é enviado via formulário
-      index <- liftIO $ readIORef currentQuestionIndex -- Lê o índice da pergunta atual diretamente do IORef
+      answerIndex <- formParam "answer" :: ActionM Text 
+      name <- formParam "name" :: ActionM Text
+      index <- liftIO $ readIORef currentQuestionIndex 
       
-      let (question, alternatives, correctIndex) = questions !! index -- Obtém a pergunta atual corretamente
+      let (question, alternatives, correctIndex) = questions !! index
       
       if read (T.unpack answerIndex) == correctIndex
         then do
-          liftIO $ updateLeaderboard leaderboard (name, 1) -- Incrementa a pontuação em 1
+          liftIO $ updateLeaderboard leaderboard (name, 1) 
           correctHtml <- liftIO $ TIO.readFile "static/correct.html"
           let responseHtml = T.replace "{name}" name correctHtml
           html responseHtml
         else do
-          liftIO $ updateLeaderboard leaderboard (name, 0) -- Não incrementa a pontuação
+          liftIO $ updateLeaderboard leaderboard (name, 0) 
           incorrectHtml <- liftIO $ TIO.readFile "static/incorrect.html"
           let responseHtml = T.replace "{name}" name incorrectHtml
           html responseHtml
 
-      -- Atualiza o índice da pergunta
       liftIO $ writeIORef currentQuestionIndex (index + 1)
 
-      -- Verifica se há mais perguntas
       if (index + 1) < length questions
-        then redirect ("/quiz?name=" <> name) -- Redireciona para a próxima pergunta
-        else redirect "/leaderboard" -- Redireciona para o leaderboard após a última pergunta
-
-    -- Página do leaderboard
+        then redirect ("/quiz?name=" <> name) 
+        else redirect "/leaderboard" 
+      
     get "/leaderboard" $ do
       lb <- liftIO $ readIORef leaderboard
       let sortedLb = sortBy (compare `on` Down . snd) lb -- Ordena por pontuação decrescente
@@ -297,13 +281,12 @@ main = do
       let responseHtml = T.replace "{scores}" leaderboardHtml leaderboardTemplate
       html responseHtml
 
--- Função para atualizar o leaderboard
 updateLeaderboard :: IORef Leaderboard -> (Text, Int) -> IO ()
 updateLeaderboard lbRef (name, score) = do
   lb <- readIORef lbRef
   let updatedLb = case lookup name lb of
-                    Just currentScore -> (name, currentScore + score) : filter ((/= name) . fst) lb -- Atualiza a pontuação existente
-                    Nothing           -> (name, score) : lb -- Adiciona novo jogador
+                    Just currentScore -> (name, currentScore + score) : filter ((/= name) . fst) lb 
+                    Nothing           -> (name, score) : lb 
   writeIORef lbRef updatedLb
 
 ```
