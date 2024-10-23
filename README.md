@@ -295,7 +295,7 @@ Terceira versão com a lógica para implementação de mais de uma questão impl
 
 # Versão final em funcionamento
 
-[![Watch the video](https://raw.githubusercontent.com/joaohsw/perso-2024b-joaohsw/main/thumbnail.png)](https://raw.githubusercontent.com/joaohsw/perso-2024b-joaohsw/main/exemplo.mp4)
+[![Watch the video](https://github.com/elc117/perso-2024b-joaohsw/blob/main/thumbnail.png)](https://github.com/elc117/perso-2024b-joaohsw/blob/main/exemplo.mp4)
 
 # Fontes
 
