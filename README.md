@@ -293,6 +293,10 @@ updateLeaderboard lbRef (name, score) = do
 
 Terceira versão com a lógica para implementação de mais de uma questão implementada.
 
+# Versão final em funcionamento
+
+[![Watch the video](https://raw.githubusercontent.com/joaohsw/perso-2024b-joaohsw/main/thumbnail.png)](https://raw.githubusercontent.com/joaohsw/perso-2024b-joaohsw/main/exemplo.mp4)
+
 # Fontes
 
 https://hackage.haskell.org/package/scotty-0.22/docs/Web-Scotty.html \
