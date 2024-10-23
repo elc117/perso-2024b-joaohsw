@@ -42,7 +42,7 @@ main = scotty 3000 $ do
       else html "<h2>Resposta Incorreta.</h2><a href=\"/quiz\">Tentar de novo</a>"
 
 ``` 
-Primeira versão/teste com a biblioteca Scotty, decidi começar implementando tanto a parte Web quanto a lógica do quiz. Sofri bastante até conseguir chegar em um protótipo minimamente funcional. 
+Primeira versão/teste com a biblioteca Scotty, decidi começar implementando tanto a parte Web quanto a lógica do quiz. Sofri bastante até conseguir chegar em um protótipo minimamente funcional. Adicionei também bibliotecas para manipulação de strings.
 
 ```html
 
@@ -179,7 +179,7 @@ updateLeaderboard lbRef (name, score) = do
 
 ```
 
-Segunda versão já com o esqueleto pronto, utilizei o chat GPT para algumas funções relacionadas à renderização dos arquivos HTML.
+Segunda versão já com o esqueleto pronto, utilizei o chat GPT para algumas funções relacionadas à renderização dos arquivos HTML. Também foram adicionadas bibliotecas para manipulação de listas.
 
 ```haskell
 
@@ -292,3 +292,10 @@ updateLeaderboard lbRef (name, score) = do
 ```
 
 Terceira versão com a lógica para implementação de mais de uma questão implementada.
+
+# Fontes
+
+https://hackage.haskell.org/package/scotty-0.22/docs/Web-Scotty.html \
+https://www.reddit.com/r/haskell/ \
+https://stackoverflow.com/questions/5944055/newline-in-haskell-string \
+https://chatgpt.com/
