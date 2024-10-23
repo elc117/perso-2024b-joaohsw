@@ -27,27 +27,45 @@
       margin-bottom: 20px;
       color: #333;
     }
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
     .btn {
       background-color: #4CAF50;
       color: white;
-      padding: 10px 20px;
+      padding: 10px;
       border: none;
       border-radius: 5px;
       cursor: pointer;
-      display: inline-block;
-      transition: background-color 0.3s ease;
+      margin-bottom: 10px;
+      width: 100%;
     }
     .btn:hover {
       background-color: #45a049;
+    }
+    .btn-leaderboard {
+      background-color: #007BFF;
+    }
+    .btn-leaderboard:hover {
+      background-color: #0056b3;
     }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>Informe o nome do jogador</h1>
+    
     <form action="/start" method="POST">
       <input type="text" name="name" placeholder="Digite seu nome" required>
       <button type="submit" class="btn">Registrar</button>
+    </form>
+
+    <form action="/leaderboard" method="get">
+      <button type="submit" class="btn btn-leaderboard">Ver Leaderboard</button>
     </form>
   </div>
 </body>

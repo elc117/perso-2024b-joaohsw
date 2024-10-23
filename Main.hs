@@ -85,8 +85,8 @@ main = do
       liftIO $ writeIORef currentQuestionIndex (index + 1)
 
       if (index + 1) < length questions
-        then redirect ("/quiz?name=" <> name) -- Redireciona para a próxima pergunta
-        else redirect "/leaderboard" -- Redireciona para o leaderboard após a última pergunta
+        then redirect ("/quiz?name=" <> name) 
+        else redirect "/leaderboard" 
 
     get "/leaderboard" $ do
       lb <- liftIO $ readIORef leaderboard
