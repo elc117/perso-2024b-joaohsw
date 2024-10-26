@@ -11,9 +11,9 @@ O quiz desafia o usuário com perguntas de múltipla escolha e no final o jogado
 
 ## Estrutura e Funcionalidades
 
-1. **Página Inicial**: Uma interface simples e intuitiva onde o jogador pode iniciar o quiz.
-2. **Sistema de Perguntas**: Implementação de questões de múltipla escolha, onde a pergunta e as alternativas são exibidas dinamicamente.
-3. **Lógica de Pontuação**: Cada resposta correta acrescenta pontos ao jogador no ranking, que é atualizado em tempo real.
+1. **Página Inicial**: Uma interface simples e intuitiva onde o jogador escolhe seu nome e inicia o jogo ou confere o leaderboard.
+2. **Sistema de Perguntas**: Implementação de questões de múltipla escolha.
+3. **Lógica de Pontuação**: Cada resposta correta acrescenta pontos ao jogador no ranking.
 4. **Leaderboard**: Ranking dos jogadores com as pontuações, em ordem decrescente.
 
 ## Estrutura de Código
