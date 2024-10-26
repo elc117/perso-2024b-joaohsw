@@ -6,10 +6,12 @@ import Data.Text.Lazy (Text)
 import qualified Data.Text.Lazy as T
 import qualified Data.Text.Lazy.IO as TIO
 import Control.Monad.IO.Class (liftIO)
+import Control.Monad (when)  -- Adicionada aqui
 import Data.IORef (newIORef, readIORef, writeIORef, IORef)
 import Data.List (sortBy)
 import Data.Ord (Down(..))
 import Data.Function (on)
+
 
 type Leaderboard = [(Text, Int)]
 type Question = (Text, [Text], Int) 
@@ -70,17 +72,8 @@ main = do
       
       let (question, alternatives, correctIndex) = questions !! index 
       
-      if read (T.unpack answerIndex) == correctIndex
-        then do
-          liftIO $ updateLeaderboard leaderboard (name, 1) 
-          correctHtml <- liftIO $ TIO.readFile "static/correct.html"
-          let responseHtml = T.replace "{name}" name correctHtml
-          html responseHtml
-        else do
-          liftIO $ updateLeaderboard leaderboard (name, 0)
-          incorrectHtml <- liftIO $ TIO.readFile "static/incorrect.html"
-          let responseHtml = T.replace "{name}" name incorrectHtml
-          html responseHtml
+      when (read (T.unpack answerIndex) == correctIndex) $
+        liftIO $ updateLeaderboard leaderboard (name, 1)
 
       liftIO $ writeIORef currentQuestionIndex (index + 1)
 
