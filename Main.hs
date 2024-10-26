@@ -37,7 +37,7 @@ main = do
     middleware logStdoutDev
 
     get "/" $ do
-      file "static/reg.html"
+      file "static/register.html"
 
     post "/start" $ do
       name <- formParam "name" :: ActionM Text 

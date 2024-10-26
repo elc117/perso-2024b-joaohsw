@@ -3,13 +3,26 @@
 Nome: João Henrique Scherer Wolski \
 Curso: Sistemas de informação
 
-# Tema do trabalho
+# Descrição do projeto
 
-Neste trabalho de faculdade, desenvolvi um serviço web utilizando Haskell e a biblioteca Scotty para criar um quiz interativo de geografia. O objetivo do projeto foi proporcionar uma ferramenta educativa que permite aos usuários testar seus conhecimentos sobre diferentes países, capitais e características geográficas. 
+Neste projeto, desenvolvi um serviço web usando Haskell e a biblioteca Scotty para criar um quiz interativo de geografia. O objetivo é proporcionar uma experiência educacional leve e divertida, incentivando o aprendizado sobre países, capitais e curiosidades geográficas.
 
-# Processo de desenvolvimento
+O quiz desafia o usuário com perguntas de múltipla escolha e no final o jogador é posicionado em um ranking com base na pontuação obtida.
 
-**Primeira versão** 
+## Estrutura e Funcionalidades
+
+1. **Página Inicial**: Uma interface simples e intuitiva onde o jogador pode iniciar o quiz.
+2. **Sistema de Perguntas**: Implementação de questões de múltipla escolha, onde a pergunta e as alternativas são exibidas dinamicamente.
+3. **Lógica de Pontuação**: Cada resposta correta acrescenta pontos ao jogador no ranking, que é atualizado em tempo real.
+4. **Leaderboard**: Ranking dos jogadores com as pontuações, em ordem decrescente.
+
+## Estrutura de Código
+
+### Primeira Versão
+
+A primeira versão teve foco na configuração básica do servidor com **Scotty** e na implementação de rotas principais, como `GET /home`, `GET /quiz`, e `POST /submit`. Houve desafios iniciais, como o carregamento de CSS, que foi resolvido usando estilos inline.
+
+#### Código Base
 
 ```haskell
 
@@ -42,7 +55,7 @@ main = scotty 3000 $ do
       else html "<h2>Resposta Incorreta.</h2><a href=\"/quiz\">Tentar de novo</a>"
 
 ``` 
-Primeira versão/teste com a biblioteca Scotty, decidi começar implementando tanto a parte Web quanto a lógica do quiz. Sofri bastante até conseguir chegar em um protótipo minimamente funcional. Adicionei também bibliotecas para manipulação de strings.
+
 
 ```html
 
@@ -106,7 +119,8 @@ Primeira versão/teste com a biblioteca Scotty, decidi começar implementando ta
 
 ```
 
-Por algum motivo, o CSS não estava sendo aplicado quando tentei carregá-lo a partir de um arquivo separado. Fiz várias tentativas para resolver o problema, mas nenhuma delas funcionou. Como resultado, optei por usar estilos inline diretamente no arquivo HTML para garantir que a estética do programa não fosse prejudicada.
+### Segunda Versão
+Essa versão integrou a criação de um ranking e a persistência de pontuações com IORef, permitindo a atualização dos pontos em tempo real.
 
 ```haskell
 
@@ -179,7 +193,9 @@ updateLeaderboard lbRef (name, score) = do
 
 ```
 
-Segunda versão já com o esqueleto pronto, utilizei o chat GPT para algumas funções relacionadas à renderização dos arquivos HTML. Também foram adicionadas bibliotecas para manipulação de listas.
+### Terceira versão
+
+A terceira versão no processo de desenvolvimento incluiu a lista completa de perguntas e a implementação de uma lógica de navegação entre elas, além do ranking final.
 
 ```haskell
 
@@ -291,15 +307,15 @@ updateLeaderboard lbRef (name, score) = do
 
 ```
 
-Terceira versão com a lógica para implementação de mais de uma questão implementada.
+# Vídeo do projeto em funcionamento
 
-# Versão final em funcionamento
+Para conferir o funcionamento do projeto, clique na imagem abaixo:
 
-[![Watch the video](https://raw.githubusercontent.com/joaohsw/perso-2024b-joaohsw/main/thumbnail.png)](https://raw.githubusercontent.com/joaohsw/perso-2024b-joaohsw/main/exemplo.mp4)
+[![Video Title](https://img.youtube.com/vi/XvSO2D39vAQ/0.jpg)](https://www.youtube.com/watch?v=XvSO2D39vAQ)
 
-# Fontes
+## Referências
 
-https://hackage.haskell.org/package/scotty-0.22/docs/Web-Scotty.html \
-https://www.reddit.com/r/haskell/ \
-https://stackoverflow.com/questions/5944055/newline-in-haskell-string \
-https://chatgpt.com/
+- [Subreddit do Haskell](https://www.reddit.com/r/haskell/)
+- [Documentação do Scotty no Hackage](https://hackage.haskell.org/package/scotty-0.22/docs/Web-Scotty.html)
+- [Discussões de Haskell no Stack Overflow](https://stackoverflow.com/questions/tagged/haskell)
+- [ChatGPT da OpenAI para assistência e solução de problemas](https://chat.openai.com/)
