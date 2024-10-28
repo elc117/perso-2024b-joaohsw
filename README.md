@@ -20,7 +20,7 @@ O quiz desafia o usuário com perguntas de múltipla escolha e no final o jogado
 
 ### Primeira Versão
 
-A primeira versão do projeto configura o servidor com Scotty, fornecendo rotas básicas para uma página inicial (/home), a página do quiz (/quiz), e uma rota para servir arquivos estáticos. Ao enviar uma resposta, o servidor verifica se a resposta é correta e exibe uma mensagem apropriada. Desafios iniciais com o carregamento de CSS foram resolvidos ao usar estilos inline para garantir consistência no design. A interface é simples e responsiva, com botões e mensagens dinâmicas, preparando o terreno para futuras funcionalidades.
+Na primeira versão do projeto configurei o servidor com Scotty, fornecendo rotas básicas para uma página inicial (/home), a página do quiz (/quiz), e uma rota para servir arquivos estáticos. Ao enviar uma resposta, o servidor verifica se a resposta é correta e exibe uma mensagem apropriada. Desafios iniciais com o carregamento de CSS foram resolvidos ao usar estilos inline para garantir consistência no design. Apesar de ser extremamente simples, essa versão foi a que eu mais sofri para implementar pois não fazia ideia do que eu estava fazendo, e apenas depois de muitas horas dedicadas e muitos erros que pareciam sem solução consegui começar a entender como eu deveria prosseguir com o projeto.
 
 #### Código Base
 
@@ -121,7 +121,7 @@ main = scotty 3000 $ do
 
 ### Segunda Versão
 
-Nessa segunda versão do código, foi implementado um ranking de pontuações, para manter as pontuações em tempo real. A estrutura Leaderboard é um tipo alias para uma lista de tuplas (Text, Int), onde cada tupla representa o nome de um participante e sua respectiva pontuação.
+Na segunda versão do código, implementei um ranking de pontuações, permitindo acompanhar o desempenho dos jogadores ao longo do quiz. Enquanto a primeira versão me concentrei em configurar as rotas básicas e compreender o funcionamento da linguagem e da biblioteca Scotty, a segunda versão expande a funcionalidade com uma estrutura de dados chamada Leaderboard, que registra o nome e a pontuação de cada jogador em uma lista. O placar é atualizado dinamicamente ao enviar uma resposta, e a página de ranking exibe a pontuação acumulada dos jogadores em ordem decrescente. A inclusão de arquivos HTML dinâmicos permitiu mensagens personalizadas e maior interatividade, e o uso de IORef (estrutura de dados em Haskell que permite manipular valores mutáveis) facilitou o armazenamento e atualização das pontuações.
 
 ```haskell
 
@@ -196,7 +196,7 @@ updateLeaderboard lbRef (name, score) = do
 
 ### Terceira versão
 
-Na terceira versão, introduzi uma lista completa de perguntas com múltiplas escolhas e um índice para rastrear a navegação entre elas, além de um ranking final para os participantes. A lista questions contém pares de perguntas e alternativas, onde cada pergunta tem um índice de resposta correta associado. A rota /quiz exibe a pergunta atual e as alternativas em HTML dinâmico, substituindo marcadores no template quiz.html com os dados correspondentes. Após a submissão em /submit, a resposta do usuário é verificada; se correta, a pontuação do jogador é incrementada no leaderboard. A lógica de navegação avança para a próxima pergunta ou redireciona para o ranking final em /leaderboard, onde as pontuações são exibidas em ordem decrescente.
+Na terceira versão, introduzi uma lista completa de perguntas com múltiplas escolhas e um índice para rastrear a navegação entre elas. A lista questions contém pares de perguntas e alternativas, onde cada pergunta tem um índice de resposta correta associado. A rota /quiz exibe a pergunta atual e as alternativas em HTML dinâmico, substituindo marcadores no template quiz.html com os dados correspondentes. Após a submissão em /submit, a resposta do usuário é verificada; se correta, a pontuação do jogador é incrementada no leaderboard. A lógica de navegação avança para a próxima pergunta ou redireciona para o ranking final em /leaderboard, onde as pontuações são exibidas em ordem decrescente.
 
 ```haskell
 
