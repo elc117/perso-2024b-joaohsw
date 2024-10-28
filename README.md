@@ -20,7 +20,7 @@ O quiz desafia o usuário com perguntas de múltipla escolha e no final o jogado
 
 ### Primeira Versão
 
-A primeira versão teve foco na configuração básica do servidor com **Scotty** e na implementação de rotas principais, como `GET /home`, `GET /quiz`, e `POST /submit`. Houve desafios iniciais, como o carregamento de CSS, que foi resolvido usando estilos inline.
+A primeira versão do projeto configura o servidor com Scotty, fornecendo rotas básicas para uma página inicial (/home), a página do quiz (/quiz), e uma rota para servir arquivos estáticos. Ao enviar uma resposta, o servidor verifica se a resposta é correta e exibe uma mensagem apropriada. Desafios iniciais com o carregamento de CSS foram resolvidos ao usar estilos inline para garantir consistência no design. A interface é simples e responsiva, com botões e mensagens dinâmicas, preparando o terreno para futuras funcionalidades.
 
 #### Código Base
 
@@ -120,7 +120,8 @@ main = scotty 3000 $ do
 ```
 
 ### Segunda Versão
-Essa versão integrou a criação de um ranking e a persistência de pontuações com IORef, permitindo a atualização dos pontos em tempo real.
+
+Nessa segunda versão do código, foi implementado um ranking de pontuações, para manter as pontuações em tempo real. A estrutura Leaderboard é um tipo alias para uma lista de tuplas (Text, Int), onde cada tupla representa o nome de um participante e sua respectiva pontuação.
 
 ```haskell
 
@@ -195,7 +196,7 @@ updateLeaderboard lbRef (name, score) = do
 
 ### Terceira versão
 
-A terceira versão no processo de desenvolvimento incluiu a lista completa de perguntas e a implementação de uma lógica de navegação entre elas, além do ranking final.
+Na terceira versão, introduzi uma lista completa de perguntas com múltiplas escolhas e um índice para rastrear a navegação entre elas, além de um ranking final para os participantes. A lista questions contém pares de perguntas e alternativas, onde cada pergunta tem um índice de resposta correta associado. A rota /quiz exibe a pergunta atual e as alternativas em HTML dinâmico, substituindo marcadores no template quiz.html com os dados correspondentes. Após a submissão em /submit, a resposta do usuário é verificada; se correta, a pontuação do jogador é incrementada no leaderboard. A lógica de navegação avança para a próxima pergunta ou redireciona para o ranking final em /leaderboard, onde as pontuações são exibidas em ordem decrescente.
 
 ```haskell
 
@@ -292,6 +293,113 @@ main = do
     get "/leaderboard" $ do
       lb <- liftIO $ readIORef leaderboard
       let sortedLb = sortBy (compare `on` Down . snd) lb -- Ordena por pontuação decrescente
+      let leaderboardHtml = T.concat $ map (\(n, s) -> T.concat ["<div>", n, ": ", T.pack (show s), " ponto(s)</div>"]) sortedLb
+      leaderboardTemplate <- liftIO $ TIO.readFile "static/leaderboard.html"
+      let responseHtml = T.replace "{scores}" leaderboardHtml leaderboardTemplate
+      html responseHtml
+
+updateLeaderboard :: IORef Leaderboard -> (Text, Int) -> IO ()
+updateLeaderboard lbRef (name, score) = do
+  lb <- readIORef lbRef
+  let updatedLb = case lookup name lb of
+                    Just currentScore -> (name, currentScore + score) : filter ((/= name) . fst) lb 
+                    Nothing           -> (name, score) : lb 
+  writeIORef lbRef updatedLb
+
+```
+
+### Versão final
+
+Na versão final refinei o sistema de pontuação e navegação no quiz (com a ajuda de IA). Diferente das versões anteriores, onde a lógica de atualização do placar era aplicada apenas em respostas corretas e incorretas, agora a pontuação do jogador é incrementada diretamente apenas se a resposta estiver correta, graças ao uso da função when para simplificar a condição. O índice de perguntas (currentQuestionIndex) é atualizado a cada submissão, garantindo uma sequência de perguntas contínua até o término do quiz, quando o usuário é redirecionado automaticamente para o ranking.
+
+```haskell
+
+{-# LANGUAGE OverloadedStrings #-}
+
+import Web.Scotty
+import Network.Wai.Middleware.RequestLogger (logStdoutDev)
+import Data.Text.Lazy (Text)
+import qualified Data.Text.Lazy as T
+import qualified Data.Text.Lazy.IO as TIO
+import Control.Monad.IO.Class (liftIO)
+import Control.Monad (when)  -- Adicionada aqui
+import Data.IORef (newIORef, readIORef, writeIORef, IORef)
+import Data.List (sortBy)
+import Data.Ord (Down(..))
+import Data.Function (on)
+
+
+type Leaderboard = [(Text, Int)]
+type Question = (Text, [Text], Int) 
+
+questions :: [Question]
+questions = [("Qual é a capital da Austrália?", ["Camberra", "Sydney", "Melbourne", "Brisbane"], 0),
+             ("Quantos países fazem parte da União Europeia?", ["27", "22", "18", "30"], 0),
+             ("Qual é a língua oficial do Suriname?", ["Português", "Holandês", "Espanhol", "Inglês"], 1),
+             ("Qual o nome da província do Canadá que é famosa pela comunidade francófona?", ["Ontário", "Alberta", "Québec", "Manitoba"], 2),
+             ("Qual é o maior país do mundo em extensão territorial?", ["Canadá", "Estados Unidos", "China", "Rússia"], 2),
+             ("Qual é o nome do maior deserto do mundo?", ["Saara", "Atacama", "Gobi", "Antártida"], 0),
+             ("Qual é o nome do rio mais extenso do mundo?", ["Nilo", "Amazonas", "Yangtzé", "Mississipi"], 1),
+             ("Qual é o nome do maior oceano do mundo?", ["Atlântico", "Índico", "Pacífico", "Ártico"], 2),
+             ("Qual é o nome do maior lago do mundo?", ["Baikal", "Michigan", "Superior", "Vitória"], 0),
+             ("Qual é o nome do maior arquipélago do mundo?", ["Havaí", "Japão", "Filipinas", "Indonésia"], 3),
+             ("Onde fica o Monte Kilimanjaro?", ["Quênia", "Nepal", "Chile", "Tanzânia"], 3),
+             ("Qual outro país da América do Sul possui o português como disciplina obrigatória do currículo escolar?", ["Argentina", "Uruguai", "Paraguai", "Venezuela"], 1),
+             ("Qual país possui o maior número de habitantes no mundo?", ["Índia", "Estados Unidos", "China", "Rússia"], 0)]
+
+main :: IO ()
+main = do
+  leaderboard <- newIORef [] 
+  currentQuestionIndex <- newIORef 0 
+  scotty 3000 $ do
+    middleware logStdoutDev
+
+    get "/" $ do
+      file "static/register.html"
+
+    post "/start" $ do
+      name <- formParam "name" :: ActionM Text 
+      liftIO $ updateLeaderboard leaderboard (name, 0)
+      liftIO $ writeIORef currentQuestionIndex 0 
+      redirect ("/quiz?name=" <> name)
+
+    get "/quiz" $ do
+      names <- queryParam "name" 
+      case names of
+        [] -> redirect "/" 
+        (playerName:_) -> do
+          index <- liftIO $ readIORef currentQuestionIndex
+          let (question, alternatives, _) = questions !! index 
+          let alternativesHtml = T.concat $ zipWith (\i a -> T.concat ["<div class='option'><input type='radio' id='option-", T.pack (show i), "' name='answer' value='", T.pack (show i), "' required><label for='option-", T.pack (show i), "'>", a, "</label></div>"]) [0..] alternatives
+
+          questionTemplate <- liftIO $ TIO.readFile "static/quiz.html"
+
+          let questionHtml = T.replace "{question}" question $
+                             T.replace "{alternatives}" alternativesHtml $
+                             T.replace "{name}" playerName $
+                             questionTemplate
+
+          html questionHtml
+
+    post "/submit" $ do
+      answerIndex <- formParam "answer" :: ActionM Text 
+      name <- formParam "name" :: ActionM Text 
+      index <- liftIO $ readIORef currentQuestionIndex 
+      
+      let (question, alternatives, correctIndex) = questions !! index 
+      
+      when (read (T.unpack answerIndex) == correctIndex) $
+        liftIO $ updateLeaderboard leaderboard (name, 1)
+
+      liftIO $ writeIORef currentQuestionIndex (index + 1)
+
+      if (index + 1) < length questions
+        then redirect ("/quiz?name=" <> name) 
+        else redirect "/leaderboard" 
+
+    get "/leaderboard" $ do
+      lb <- liftIO $ readIORef leaderboard
+      let sortedLb = sortBy (compare `on` Down . snd) lb 
       let leaderboardHtml = T.concat $ map (\(n, s) -> T.concat ["<div>", n, ": ", T.pack (show s), " ponto(s)</div>"]) sortedLb
       leaderboardTemplate <- liftIO $ TIO.readFile "static/leaderboard.html"
       let responseHtml = T.replace "{scores}" leaderboardHtml leaderboardTemplate
